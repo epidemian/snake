@@ -130,9 +130,7 @@ function changeDirection(newDir) {
   var lastDir = moveQueue[0] || direction;
   var opposite = newDir.x + lastDir.x === 0 && newDir.y + lastDir.y === 0;
   if (!opposite) {
-    // Process moves in a queue instead of directly changing direction to
-    // prevent having more than one direction change per tick, which can result
-    // in the snake turning around in one tick and colliding with itself.
+    // Process moves in a queue to prevent multiple direction changes per tick.
     moveQueue.unshift(newDir);
   }
 }
