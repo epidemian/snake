@@ -1,24 +1,24 @@
-var COLS = 20;
-var MAP_WIDTH = COLS * 2;
-var MAP_HEIGHT = 4;
-var TILE_EMPTY = 0;
-var TILE_SNAKE = 1;
-var TILE_FOOD = 2;
-var UP = [0, -1];
-var DOWN = [0, 1];
-var LEFT = [-1, 0];
-var RIGHT = [1, 0];
+"use strict";
 
-var map;
+var GRID_WIDTH = 40;
+var GRID_HEIGHT = 4;
+var CELL_EMPTY = 0;
+var CELL_SNAKE = 1;
+var CELL_FOOD = 2;
+var UP = {x: 0, y: -1};
+var DOWN = {x: 0, y: 1};
+var LEFT = {x: -1, y: 0};
+var RIGHT = {x: 1, y: 0};
+var grid;
 var snake;
 var direction;
 var moveQueue;
 
 function init() {
-  map = new Array(MAP_WIDTH * MAP_HEIGHT).fill(TILE_EMPTY);
-  snake = [[3, 2], [2, 2], [1, 2], [0, 2]];
-  snake.forEach(function (snakePoint) {
-    setTileAt(snakePoint[0], snakePoint[1], TILE_SNAKE)
+  grid = new Array(GRID_WIDTH * GRID_HEIGHT).fill(CELL_EMPTY);
+  snake = [{x: 3, y: 2}, {x: 2, y: 2}, {x: 1, y: 2}, {x: 0, y: 2}];
+  snake.forEach(function (segment) {
+    setCellAt(segment.x, segment.y, CELL_SNAKE)
   });
   direction = RIGHT;
   moveQueue = [];
@@ -36,37 +36,37 @@ function updateWorld() {
   }
 
   var head = snake[0];
-  var newX = head[0] + direction[0];
-  var newY = head[1] + direction[1];
-
-  var gameOver = newX < 0 || newX >= MAP_WIDTH
-    || newY < 0 || newY >= MAP_HEIGHT
-    || tileAt(newX, newY) === TILE_SNAKE;
+  var newX = head.x + direction.x;
+  var newY = head.y + direction.y;
+  var gameOver = newX < 0 || newX >= GRID_WIDTH
+    || newY < 0 || newY >= GRID_HEIGHT
+    || cellAt(newX, newY) === CELL_SNAKE;
   if (gameOver) {
     init();
     return;
   }
 
-  var ateFood = tileAt(newX, newY) === TILE_FOOD;
-  setTileAt(newX, newY, TILE_SNAKE);
-  snake.unshift([newX, newY]);
+  var ateFood = cellAt(newX, newY) === CELL_FOOD;
+  setCellAt(newX, newY, CELL_SNAKE);
+  snake.unshift({x: newX, y: newY});
 
   if (ateFood) {
     dropFood();
   } else {
     var tail = snake.pop();
-    setTileAt(tail[0], tail[1], TILE_EMPTY);
+    setCellAt(tail.x, tail.y, CELL_EMPTY);
   }
 }
 
 function drawWorld() {
-  var mapStr = '';
-  for (var col = 0; col < COLS; col++) {
+  var str = '';
+  var length = GRID_WIDTH / 2;
+  for (var i = 0; i < length; i++) {
     // Unicode Braille patterns are 256 code points going from 0x2800 to 0x28FF.
     // They follow a binary pattern where the bits are, from least significant
     // to most: ⠁⠂⠄⠈⠐⠠⡀⢀
     // So, for example, 147 (10010011) corresponds to ⢓
-    var x = col * 2;
+    var x = i * 2;
     var n = 0
       | bitAt(x, 0) << 0
       | bitAt(x, 1) << 1
@@ -76,34 +76,34 @@ function drawWorld() {
       | bitAt(x + 1, 2) << 5
       | bitAt(x, 3) << 6
       | bitAt(x + 1, 3) << 7;
-    mapStr += String.fromCharCode(0x2800 + n);
+    str += String.fromCharCode(0x2800 + n);
   }
-  window.history.replaceState(null, mapStr, '?|' + mapStr + '|');
+  window.history.replaceState(null, null, '?|' + str + '|');
 }
 
-function tileAt(x, y) {
-  return map[x % MAP_WIDTH + y * MAP_WIDTH];
+function cellAt(x, y) {
+  return grid[x % GRID_WIDTH + y * GRID_WIDTH];
 }
 
 function bitAt(x, y) {
-  return tileAt(x, y) === TILE_EMPTY ? 0 : 1;
+  return cellAt(x, y) === CELL_EMPTY ? 0 : 1;
 }
 
-function setTileAt(x, y, tileType) {
-  map[x % MAP_WIDTH + y * MAP_WIDTH] = tileType;
+function setCellAt(x, y, cellType) {
+  grid[x % GRID_WIDTH + y * GRID_WIDTH] = cellType;
 }
 
 function dropFood() {
-  var emptyTiles = map.length - snake.length;
-  if (emptyTiles === 0) {
+  var emptyCells = grid.length - snake.length;
+  if (emptyCells === 0) {
     return;
   }
-  var dropCounter = Math.floor(Math.random() * emptyTiles);
-  for (var i = 0; i < map.length; i++) {
-    if (map[i] === TILE_SNAKE)
+  var dropCounter = Math.floor(Math.random() * emptyCells);
+  for (var i = 0; i < grid.length; i++) {
+    if (grid[i] === CELL_SNAKE)
       continue;
     if (dropCounter === 0) {
-      map[i] = TILE_FOOD;
+      grid[i] = CELL_FOOD;
       break;
     }
     dropCounter--;
@@ -112,7 +112,7 @@ function dropFood() {
 
 function changeDirection(newDir) {
   var lastDir = moveQueue[0] || direction;
-  var opposite = newDir[0] + lastDir[0] === 0 && newDir[1] + lastDir[1] === 0;
+  var opposite = newDir.x + lastDir.x === 0 && newDir.y + lastDir.y === 0;
   if (!opposite) {
     // Process moves in a queue instead of directly changing direction to
     // prevent having more than one direction change per tick, which can result
