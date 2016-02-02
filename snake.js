@@ -135,7 +135,10 @@ function changeDirection(newDir) {
   }
 }
 
-var DIRECTIONS_BY_KEY_CODE = {37: LEFT, 38: UP, 39: RIGHT, 40: DOWN};
+var DIRECTIONS_BY_KEY_CODE = {
+  37: LEFT, 38: UP, 39: RIGHT, 40: DOWN,
+  65: LEFT, 87: UP, 68: RIGHT, 83: DOWN,
+};
 document.addEventListener('keydown', function (event) {
   var key = event.keyCode;
   if (key in DIRECTIONS_BY_KEY_CODE) {
