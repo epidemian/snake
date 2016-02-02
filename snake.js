@@ -12,6 +12,7 @@ var RIGHT = [1, 0];
 var map;
 var snake;
 var direction;
+var moveQueue;
 
 function init() {
   map = new Array(MAP_WIDTH * MAP_HEIGHT).fill(TILE_EMPTY);
@@ -20,6 +21,7 @@ function init() {
     setTileAt(snakePoint[0], snakePoint[1], TILE_SNAKE)
   });
   direction = RIGHT;
+  moveQueue = [];
   dropFood();
 }
 
@@ -29,6 +31,10 @@ function tick() {
 }
 
 function updateWorld() {
+  if (moveQueue.length) {
+    direction = moveQueue.pop();
+  }
+
   var head = snake[0];
   var newX = head[0] + direction[0];
   var newY = head[1] + direction[1];
@@ -104,10 +110,14 @@ function dropFood() {
   }
 }
 
-function changeDirection(d) {
-  if (d[0] + direction[0] !== 0 || d[1] + direction[1] !== 0) {
-    // Not opposite direction.
-    direction = d;
+function changeDirection(newDir) {
+  var lastDir = moveQueue[0] || direction;
+  var opposite = newDir[0] + lastDir[0] === 0 && newDir[1] + lastDir[1] === 0;
+  if (!opposite) {
+    // Process moves in a queue instead of directly changing direction to
+    // prevent having more than one direction change per tick, which can result
+    // in the snake turning around in one tick and colliding with itself.
+    moveQueue.unshift(newDir);
   }
 }
 
