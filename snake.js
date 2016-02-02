@@ -9,10 +9,12 @@ var UP = {x: 0, y: -1};
 var DOWN = {x: 0, y: 1};
 var LEFT = {x: -1, y: 0};
 var RIGHT = {x: 1, y: 0};
+
 var grid;
 var snake;
 var direction;
 var moveQueue;
+var lastFrameTime;
 
 function init() {
   grid = new Array(GRID_WIDTH * GRID_HEIGHT).fill(CELL_EMPTY);
@@ -23,6 +25,20 @@ function init() {
   direction = RIGHT;
   moveQueue = [];
   dropFood();
+}
+
+function onAnimationFrame() {
+  var now = new Date;
+  if (now - lastFrameTime >= tickTime() || !lastFrameTime) {
+    tick();
+    lastFrameTime = now;
+  }
+  window.requestAnimationFrame(onAnimationFrame);
+}
+
+function tickTime() {
+  // Game speed increases as snake grows.
+  return 125 - 50 * snake.length / grid.length;
 }
 
 function tick() {
@@ -130,4 +146,4 @@ document.addEventListener('keydown', function (event) {
 });
 
 init();
-window.setInterval(tick, 100);
+window.requestAnimationFrame(onAnimationFrame);
