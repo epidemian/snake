@@ -56,7 +56,8 @@ footer {
   font-size: 0.9rem;
 }
 
-@media (max-width: 640px) {
+/* Make buttons bigger on devices with coarse pointer capabilities. */
+@media (pointer: coarse) {
   .controls {
     width: 100%;
   }
