@@ -1,0 +1,72 @@
+/* Reset */
+html, body, h1, p {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+html {
+  font-family: Arial, sans-serif;
+  color: #222;
+  line-height: 1.5;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 10px;
+}
+
+.controls {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.controls .row {
+  display: flex;
+}
+
+.controls button {
+  flex: 1;
+  color: #666;
+  min-width: 50px;
+  min-height: 50px;
+  background: none;
+  border: 2px solid;
+  margin: 2px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.controls .dummy {
+  visibility: hidden;
+}
+
+footer {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .controls {
+    width: 100%;
+  }
+
+  .controls .row {
+    flex: 1;
+    max-height: 30vw;
+  }
+
+  .controls button {
+    font-size: 10vw;
+  }
+}

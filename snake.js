@@ -15,7 +15,7 @@ var snake;
 var direction;
 var moveQueue;
 var lastFrameTime;
-var paused = true;
+var paused = false;
 
 function init() {
   grid = new Array(GRID_WIDTH * GRID_HEIGHT).fill(CELL_EMPTY);
@@ -137,10 +137,13 @@ function changeDirection(newDir) {
   }
 }
 
-function setPaused(value) {
-  paused = value;
-  var pauseNotice = document.getElementById('pause-notice');
-  pauseNotice.classList.toggle('invisible', !paused);
+function pauseGame() {
+  paused = true;
+  window.history.replaceState(null, null, window.location.hash + ' (paused)')
+}
+function unpauseGame() {
+  paused = false;
+  drawWorld();
 }
 
 var DIRECTIONS_BY_KEY_CODE = {
@@ -154,8 +157,18 @@ document.addEventListener('keydown', function (event) {
   }
 });
 
-window.addEventListener('focus', function() { setPaused(false); });
-window.addEventListener('blur', function() { setPaused(true); });
+function setDirectionButton(id, dir) {
+  document.getElementById(id).addEventListener('mousedown', function () {
+    changeDirection(dir);
+  });
+}
+setDirectionButton('up', UP);
+setDirectionButton('down', DOWN);
+setDirectionButton('left', LEFT);
+setDirectionButton('right', RIGHT);
+
+window.addEventListener('blur', function() { pauseGame(); });
+window.addEventListener('focus', function() { unpauseGame(); });
 
 init();
 window.requestAnimationFrame(onAnimationFrame);

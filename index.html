@@ -3,12 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Address Bar Snake!</title>
-  <style>
-    .invisible { display: none; }
-  </style>
+  <meta name="description" content="Play the classic snake game on the browser address bar"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="pause-notice" class="invisible">Paused<br/>(click to unpause)</div>
+  <p>Control the address-bar snake using the arrow keys, WASD, or these:</p>
+  <div class="controls">
+    <div class="row">
+      <button class="dummy"></button>
+      <button id="up">▲</button>
+      <button class="dummy"></button>
+    </div>
+    <div class="row">
+      <button id="left">◀</button>
+      <button id="down">▼</button>
+      <button id="right">▶</button>
+    </div>
+  </div>
+  <footer>
+    Made with (⠠⠇) by <a href="https://twitter.com/epidemian" target="_blank">@epidemian</a>
+  </footer>
   <script src="snake.js"></script>
 </body>
 </html>
