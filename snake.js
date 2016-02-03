@@ -15,6 +15,7 @@ var snake;
 var direction;
 var moveQueue;
 var lastFrameTime;
+var paused = true;
 
 function init() {
   grid = new Array(GRID_WIDTH * GRID_HEIGHT).fill(CELL_EMPTY);
@@ -29,7 +30,8 @@ function init() {
 
 function onAnimationFrame() {
   var now = new Date;
-  if (now - lastFrameTime >= tickTime() || !lastFrameTime) {
+  var tickElapsed = (now - lastFrameTime >= tickTime() || !lastFrameTime);
+  if (!paused && tickElapsed) {
     tick();
     lastFrameTime = now;
   }
@@ -94,7 +96,7 @@ function drawWorld() {
       | bitAt(x + 1, 3) << 7;
     str += String.fromCharCode(0x2800 + n);
   }
-  window.history.replaceState(null, null, '?|' + str + '|');
+  window.history.replaceState(null, null, '#|' + str + '|');
 }
 
 function cellAt(x, y) {
@@ -135,9 +137,15 @@ function changeDirection(newDir) {
   }
 }
 
+function setPaused(value) {
+  paused = value;
+  var pauseNotice = document.getElementById('pause-notice');
+  pauseNotice.classList.toggle('invisible', !paused);
+}
+
 var DIRECTIONS_BY_KEY_CODE = {
   37: LEFT, 38: UP, 39: RIGHT, 40: DOWN,
-  65: LEFT, 87: UP, 68: RIGHT, 83: DOWN,
+  65: LEFT, 87: UP, 68: RIGHT, 83: DOWN
 };
 document.addEventListener('keydown', function (event) {
   var key = event.keyCode;
@@ -145,6 +153,9 @@ document.addEventListener('keydown', function (event) {
     changeDirection(DIRECTIONS_BY_KEY_CODE[key]);
   }
 });
+
+window.addEventListener('focus', function() { setPaused(false); });
+window.addEventListener('blur', function() { setPaused(true); });
 
 init();
 window.requestAnimationFrame(onAnimationFrame);
