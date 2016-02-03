@@ -56,6 +56,14 @@ function updateWorld() {
   var head = snake[0];
   var newX = head.x + direction.x;
   var newY = head.y + direction.y;
+
+  var eatsFood = cellAt(newX, newY) === CELL_FOOD;
+  if (!eatsFood) {
+    // Advance tail before head to avoid colliding with the last snake segment.
+    var tail = snake.pop();
+    setCellAt(tail.x, tail.y, CELL_EMPTY);
+  }
+
   var gameOver = newX < 0 || newX >= GRID_WIDTH
     || newY < 0 || newY >= GRID_HEIGHT
     || cellAt(newX, newY) === CELL_SNAKE;
@@ -64,15 +72,11 @@ function updateWorld() {
     return;
   }
 
-  var ateFood = cellAt(newX, newY) === CELL_FOOD;
   setCellAt(newX, newY, CELL_SNAKE);
   snake.unshift({x: newX, y: newY});
 
-  if (ateFood) {
+  if (eatsFood) {
     dropFood();
-  } else {
-    var tail = snake.pop();
-    setCellAt(tail.x, tail.y, CELL_EMPTY);
   }
 }
 
