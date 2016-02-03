@@ -40,7 +40,9 @@ function onAnimationFrame() {
 
 function tickTime() {
   // Game speed increases as snake grows.
-  return 125 - 50 * snake.length / grid.length;
+  var start = 125;
+  var end = 75;
+  return start + snake.length * (end - start) / grid.length;
 }
 
 function tick() {
