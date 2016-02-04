@@ -8,19 +8,33 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <p>Control the address-bar snake using the arrow keys, WASD, or these:</p>
-  <div class="controls">
-    <div class="row">
-      <button class="dummy"></button>
-      <button id="up">▲</button>
-      <button class="dummy"></button>
+  <main>
+    <p>
+      Use the arrow keys or WASD to control the snake on the address bar.
+      <span class="controls-text">Or these:</span>
+    </p>
+    <div class="controls">
+      <div class="row">
+        <button class="dummy"></button>
+        <button id="up">▲</button>
+        <button class="dummy"></button>
+      </div>
+      <div class="row">
+        <button id="left">◀</button>
+        <button id="down">▼</button>
+        <button id="right">▶</button>
+      </div>
     </div>
-    <div class="row">
-      <button id="left">◀</button>
-      <button id="down">▼</button>
-      <button id="right">▶</button>
+    <div id="max-score-container" class="invisible">
+      Your highest score is <span id="max-score"></span> points!
+      <span id="max-score-grid"></span><br>
+      Proudly share it:
+      <a id="twitter-share-button" class="share-button" href="" title="Tweet" target="_blank"><img src="images/share-twitter.svg"></a>
+      <a class="share-button"
+         href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fepidemian.github.io%2Fsnakebar"
+         title="Share on Facebook" target="_blank"><img src="images/share-facebook.svg"></a>
     </div>
-  </div>
+  </main>
   <footer>
     Made with (⠠⠇) by <a href="https://twitter.com/epidemian" target="_blank">@epidemian</a>
   </footer>

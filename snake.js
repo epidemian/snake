@@ -9,6 +9,7 @@ var UP = {x: 0, y: -1};
 var DOWN = {x: 0, y: 1};
 var LEFT = {x: -1, y: 0};
 var RIGHT = {x: 1, y: 0};
+var INITIAL_SNAKE_LENGTH = 4;
 
 var grid;
 var snake;
@@ -19,10 +20,12 @@ var paused = false;
 
 function init() {
   grid = new Array(GRID_WIDTH * GRID_HEIGHT).fill(CELL_EMPTY);
-  snake = [{x: 3, y: 2}, {x: 2, y: 2}, {x: 1, y: 2}, {x: 0, y: 2}];
-  snake.forEach(function (segment) {
-    setCellAt(segment.x, segment.y, CELL_SNAKE)
-  });
+  snake = [];
+  for (var x = 0; x < INITIAL_SNAKE_LENGTH; x++) {
+    var y = 2;
+    snake.unshift({x: x, y: y});
+    setCellAt(x, y, CELL_SNAKE)
+  }
   direction = RIGHT;
   moveQueue = [];
   dropFood();
@@ -32,7 +35,8 @@ function onAnimationFrame() {
   var now = new Date;
   var tickElapsed = (now - lastFrameTime >= tickTime() || !lastFrameTime);
   if (!paused && tickElapsed) {
-    tick();
+    updateWorld();
+    drawWorld();
     lastFrameTime = now;
   }
   window.requestAnimationFrame(onAnimationFrame);
@@ -45,35 +49,32 @@ function tickTime() {
   return start + snake.length * (end - start) / grid.length;
 }
 
-function tick() {
-  updateWorld();
-  drawWorld();
-}
-
 function updateWorld() {
   if (moveQueue.length) {
     direction = moveQueue.pop();
   }
 
   var head = snake[0];
+  var tail = snake[snake.length - 1];
   var newX = head.x + direction.x;
   var newY = head.y + direction.y;
 
-  var eatsFood = cellAt(newX, newY) === CELL_FOOD;
-  if (!eatsFood) {
-    // Advance tail before head to avoid colliding with the last snake segment.
-    var tail = snake.pop();
-    setCellAt(tail.x, tail.y, CELL_EMPTY);
-  }
-
   var gameOver = newX < 0 || newX >= GRID_WIDTH
     || newY < 0 || newY >= GRID_HEIGHT
-    || cellAt(newX, newY) === CELL_SNAKE;
+    || (cellAt(newX, newY) === CELL_SNAKE && !(newX === tail.x && newY === tail.y));
   if (gameOver) {
+    checkMaxScore();
     init();
     return;
   }
 
+  var eatsFood = cellAt(newX, newY) === CELL_FOOD;
+  if (!eatsFood) {
+    snake.pop();
+    setCellAt(tail.x, tail.y, CELL_EMPTY);
+  }
+
+  // Advance head after tail so it can occupy the same cell on next tick.
   setCellAt(newX, newY, CELL_SNAKE);
   snake.unshift({x: newX, y: newY});
 
@@ -82,7 +83,43 @@ function updateWorld() {
   }
 }
 
+function currentScore() {
+  return snake.length - INITIAL_SNAKE_LENGTH;
+}
+
+function checkMaxScore() {
+  var score = currentScore();
+  var maxScore = parseInt(window.localStorage.maxScore || 0);
+  if (score > 0 && score > maxScore) {
+    window.localStorage.maxScore = score;
+    window.localStorage.maxScoreGrid = gridString();
+    drawMaxScore()
+  }
+}
+
+function twitterShareUrl(maxScore, maxScoreGrid) {
+  var tweet = maxScoreGrid + '| Got ' + maxScore +
+    ' points playing this stupid snake game on the address bar!';
+  return 'https://twitter.com/intent/tweet' +
+    '?url=https%3A%2F%2Fepidemian.github.io%2Fsnakebar' +
+    '&text=' + encodeURIComponent(tweet)
+}
+function drawMaxScore() {
+  var maxScore = window.localStorage.maxScore;
+  if (maxScore == null) return;
+  var maxScoreGrid = window.localStorage.maxScoreGrid;
+  document.getElementById('max-score').innerText = maxScore;
+  document.getElementById('max-score-grid').innerText = maxScoreGrid;
+  document.getElementById('max-score-container').classList.remove('invisible');
+  document.getElementById('twitter-share-button').href = twitterShareUrl(maxScore, maxScoreGrid)
+}
+
 function drawWorld() {
+  var hash = '#|' + gridString() + '| score: ' + currentScore();
+  window.history.replaceState(null, null, hash);
+}
+
+function gridString() {
   var str = '';
   var length = GRID_WIDTH / 2;
   for (var i = 0; i < length; i++) {
@@ -102,7 +139,7 @@ function drawWorld() {
       | bitAt(x + 1, 3) << 7;
     str += String.fromCharCode(0x2800 + n);
   }
-  window.history.replaceState(null, null, '#|' + str + '|');
+  return str;
 }
 
 function cellAt(x, y) {
@@ -176,5 +213,6 @@ setDirectionButton('right', RIGHT);
 window.addEventListener('blur', function() { pauseGame(); });
 window.addEventListener('focus', function() { unpauseGame(); });
 
+drawMaxScore();
 init();
 window.requestAnimationFrame(onAnimationFrame);

@@ -21,53 +21,77 @@ html {
 body {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   padding: 5px 10px;
 }
 
-.controls {
+main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 10px 0;
 }
 
-.controls .row {
-  display: flex;
+.controls, .controls-text {
+  display: none;
 }
 
-.controls button {
-  flex: 1;
-  color: #666;
-  min-width: 50px;
-  min-height: 50px;
-  background: none;
-  border: 2px solid;
-  margin: 2px;
-  border-radius: 7px;
-  cursor: pointer;
+.share-button img{
+  width: 1.5rem;
+  vertical-align: middle;
 }
 
-.controls .dummy {
-  visibility: hidden;
+#max-score-grid {
+  background: #eee;
 }
 
 footer {
   font-size: 0.9rem;
 }
 
-/* Make buttons bigger on devices with coarse pointer capabilities. */
+.invisible {
+  display: none;
+}
+
+/*
+Assume devices with coarse pointer capabilities don't have a physical keyboard
+(e.g. mobile) and show tappable button controls on them.
+*/
 @media (pointer: coarse) {
+  .controls-text {
+    display: inline;
+  }
+
   .controls {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    align-self: center;
+    width: 80vmin;
+    height: 60vmin;
   }
 
   .controls .row {
     flex: 1;
-    max-height: 30vw;
+    display: flex;
   }
 
   .controls button {
-    font-size: 10vw;
+    flex: 1;
+    color: #666;
+    font-size: 10vmin;
+    background: none;
+    border: 2px solid;
+    margin: 2px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .controls .dummy {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 30em) {
+  html {
+    font-size: 1.3em;
   }
 }
