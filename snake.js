@@ -10,8 +10,7 @@ var DOWN = {x: 0, y: 1};
 var LEFT = {x: -1, y: 0};
 var RIGHT = {x: 1, y: 0};
 var INITIAL_SNAKE_LENGTH = 4;
-var CANONICAL_URL = location.protocol + '//' + location.host +
-  location.pathname;
+var CANONICAL_URL = document.querySelector('link[rel=canonical]').href;
 
 var grid;
 var snake;
