@@ -1,10 +1,8 @@
 "use strict";
 
 var GRID_WIDTH = 40;
-var GRID_HEIGHT = 4;
-var CELL_EMPTY = 0;
-var CELL_SNAKE = 1;
-var CELL_FOOD = 2;
+var SNAKE_CELL = 1;
+var FOOD_CELL = 2;
 var UP = {x: 0, y: -1};
 var DOWN = {x: 0, y: 1};
 var LEFT = {x: -1, y: 0};
@@ -64,12 +62,12 @@ function setupEventHandlers() {
 }
 
 function startGame() {
-  grid = new Array(GRID_WIDTH * GRID_HEIGHT).fill(CELL_EMPTY);
+  grid = new Array(GRID_WIDTH * 4);
   snake = [];
   for (var x = 0; x < INITIAL_SNAKE_LENGTH; x++) {
     var y = 2;
     snake.unshift({x: x, y: y});
-    setCellAt(x, y, CELL_SNAKE)
+    setCellAt(x, y, SNAKE_CELL)
   }
   currentDirection = RIGHT;
   moveQueue = [];
@@ -86,9 +84,8 @@ function updateWorld() {
   var newX = head.x + currentDirection.x;
   var newY = head.y + currentDirection.y;
 
-  var outOfBounds = newX < 0 || newX >= GRID_WIDTH
-    || newY < 0 || newY >= GRID_HEIGHT;
-  var collidesWithSelf = cellAt(newX, newY) === CELL_SNAKE
+  var outOfBounds = newX < 0 || newX >= GRID_WIDTH || newY < 0 || newY >= 4;
+  var collidesWithSelf = cellAt(newX, newY) === SNAKE_CELL
     && !(newX === tail.x && newY === tail.y);
 
   if (outOfBounds || collidesWithSelf) {
@@ -97,14 +94,14 @@ function updateWorld() {
     return;
   }
 
-  var eatsFood = cellAt(newX, newY) === CELL_FOOD;
+  var eatsFood = cellAt(newX, newY) === FOOD_CELL;
   if (!eatsFood) {
     snake.pop();
-    setCellAt(tail.x, tail.y, CELL_EMPTY);
+    setCellAt(tail.x, tail.y, null);
   }
 
   // Advance head after tail so it can occupy the same cell on next tick.
-  setCellAt(newX, newY, CELL_SNAKE);
+  setCellAt(newX, newY, SNAKE_CELL);
   snake.unshift({x: newX, y: newY});
 
   if (eatsFood) {
@@ -166,7 +163,7 @@ function cellAt(x, y) {
 }
 
 function bitAt(x, y) {
-  return cellAt(x, y) === CELL_EMPTY ? 0 : 1;
+  return cellAt(x, y) ? 1 : 0;
 }
 
 function setCellAt(x, y, cellType) {
@@ -180,10 +177,10 @@ function dropFood() {
   }
   var dropCounter = Math.floor(Math.random() * emptyCells);
   for (var i = 0; i < grid.length; i++) {
-    if (grid[i] === CELL_SNAKE)
+    if (grid[i] === SNAKE_CELL)
       continue;
     if (dropCounter === 0) {
-      grid[i] = CELL_FOOD;
+      grid[i] = FOOD_CELL;
       break;
     }
     dropCounter--;
