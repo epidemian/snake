@@ -10,16 +10,60 @@ var DOWN = {x: 0, y: 1};
 var LEFT = {x: -1, y: 0};
 var RIGHT = {x: 1, y: 0};
 var INITIAL_SNAKE_LENGTH = 4;
-var CANONICAL_URL = document.querySelector('link[rel=canonical]').href;
 
 var grid;
 var snake;
-var direction;
+var currentDirection;
 var moveQueue;
-var lastFrameTime;
-var paused = false;
+var gamePaused = false;
 
-function init() {
+function main() {
+  setupEventHandlers();
+  drawMaxScore();
+  startGame();
+
+  var lastFrameTime = new Date;
+  window.requestAnimationFrame(function frameHandler() {
+    var now = new Date;
+    if (!gamePaused && now - lastFrameTime >= tickTime()) {
+      updateWorld();
+      drawWorld();
+      lastFrameTime = now;
+    }
+    window.requestAnimationFrame(frameHandler);
+  });
+}
+
+function setupEventHandlers() {
+  var directionsByKey = {
+    37: LEFT, 38: UP, 39: RIGHT, 40: DOWN,
+    65: LEFT, 87: UP, 68: RIGHT, 83: DOWN
+  };
+
+  document.onkeydown = function (event) {
+    var key = event.keyCode;
+    if (key in directionsByKey) {
+      changeDirection(directionsByKey[key]);
+    }
+  };
+
+  $('#up').onmousedown = function () { changeDirection(UP); };
+  $('#down').onmousedown = function () { changeDirection(DOWN); };
+  $('#left').onmousedown = function () { changeDirection(LEFT); };
+  $('#right').onmousedown = function () { changeDirection(RIGHT); };
+
+  window.onblur = function pauseGame() {
+    gamePaused = true;
+    window.history.replaceState(null, null, location.hash + ' (paused)')
+  };
+
+  window.onfocus = function unpauseGame() {
+    gamePaused = false;
+    drawWorld();
+  };
+}
+
+function startGame() {
   grid = new Array(GRID_WIDTH * GRID_HEIGHT).fill(CELL_EMPTY);
   snake = [];
   for (var x = 0; x < INITIAL_SNAKE_LENGTH; x++) {
@@ -27,45 +71,29 @@ function init() {
     snake.unshift({x: x, y: y});
     setCellAt(x, y, CELL_SNAKE)
   }
-  direction = RIGHT;
+  currentDirection = RIGHT;
   moveQueue = [];
   dropFood();
 }
 
-function onAnimationFrame() {
-  var now = new Date;
-  var tickElapsed = (now - lastFrameTime >= tickTime() || !lastFrameTime);
-  if (!paused && tickElapsed) {
-    updateWorld();
-    drawWorld();
-    lastFrameTime = now;
-  }
-  window.requestAnimationFrame(onAnimationFrame);
-}
-
-function tickTime() {
-  // Game speed increases as snake grows.
-  var start = 125;
-  var end = 75;
-  return start + snake.length * (end - start) / grid.length;
-}
-
 function updateWorld() {
   if (moveQueue.length) {
-    direction = moveQueue.pop();
+    currentDirection = moveQueue.pop();
   }
 
   var head = snake[0];
   var tail = snake[snake.length - 1];
-  var newX = head.x + direction.x;
-  var newY = head.y + direction.y;
+  var newX = head.x + currentDirection.x;
+  var newY = head.y + currentDirection.y;
 
-  var gameOver = newX < 0 || newX >= GRID_WIDTH
-    || newY < 0 || newY >= GRID_HEIGHT
-    || (cellAt(newX, newY) === CELL_SNAKE && !(newX === tail.x && newY === tail.y));
-  if (gameOver) {
-    checkMaxScore();
-    init();
+  var outOfBounds = newX < 0 || newX >= GRID_WIDTH
+    || newY < 0 || newY >= GRID_HEIGHT;
+  var collidesWithSelf = cellAt(newX, newY) === CELL_SNAKE
+    && !(newX === tail.x && newY === tail.y);
+
+  if (outOfBounds || collidesWithSelf) {
+    endGame();
+    startGame();
     return;
   }
 
@@ -84,11 +112,7 @@ function updateWorld() {
   }
 }
 
-function currentScore() {
-  return snake.length - INITIAL_SNAKE_LENGTH;
-}
-
-function checkMaxScore() {
+function endGame() {
   var score = currentScore();
   var maxScore = parseInt(localStorage.maxScore || 0);
   if (score > 0 && score > maxScore) {
@@ -96,31 +120,6 @@ function checkMaxScore() {
     localStorage.maxScoreGrid = gridString();
     drawMaxScore()
   }
-}
-
-function drawMaxScore() {
-  var maxScore = localStorage.maxScore;
-  if (maxScore == null) return;
-  var maxScoreGrid = localStorage.maxScoreGrid;
-  document.getElementById('max-score').innerText = maxScore;
-  document.getElementById('max-score-grid').innerText = maxScoreGrid;
-  document.getElementById('max-score-container').classList.remove('invisible');
-  document.getElementById('twitter-share-button').href =
-    twitterShareUrl(maxScore, maxScoreGrid);
-  document.getElementById('facebook-share-button').href = facebookShareUrl()
-}
-
-function twitterShareUrl(maxScore, maxScoreGrid) {
-  var tweet = maxScoreGrid + '| Got ' + maxScore +
-    ' points playing this stupid snake game on the address bar!';
-  return 'https://twitter.com/intent/tweet' +
-    '?url=' + encodeURIComponent(CANONICAL_URL) +
-    '&text=' + encodeURIComponent(tweet)
-}
-
-function facebookShareUrl() {
-  return 'https://www.facebook.com/sharer/sharer.php?u=' +
-    encodeURIComponent(CANONICAL_URL);
 }
 
 function drawWorld() {
@@ -149,6 +148,17 @@ function gridString() {
     str += String.fromCharCode(0x2800 + n);
   }
   return str;
+}
+
+function tickTime() {
+  // Game speed increases as snake grows.
+  var start = 125;
+  var end = 75;
+  return start + snake.length * (end - start) / grid.length;
+}
+
+function currentScore() {
+  return snake.length - INITIAL_SNAKE_LENGTH;
 }
 
 function cellAt(x, y) {
@@ -181,7 +191,7 @@ function dropFood() {
 }
 
 function changeDirection(newDir) {
-  var lastDir = moveQueue[0] || direction;
+  var lastDir = moveQueue[0] || currentDirection;
   var opposite = newDir.x + lastDir.x === 0 && newDir.y + lastDir.y === 0;
   if (!opposite) {
     // Process moves in a queue to prevent multiple direction changes per tick.
@@ -189,42 +199,34 @@ function changeDirection(newDir) {
   }
 }
 
-function pauseGame() {
-  paused = true;
-  window.history.replaceState(null, null, location.hash + ' (paused)')
+function drawMaxScore() {
+  var maxScore = localStorage.maxScore;
+  if (maxScore == null) return;
+  var maxScoreGrid = localStorage.maxScoreGrid;
+  $('#max-score').innerText = maxScore;
+  $('#max-score-grid').innerText = maxScoreGrid;
+  $('#max-score-container').classList.remove('invisible');
+  $('#twitter-share-button').href = twitterShareUrl(maxScore, maxScoreGrid);
+  $('#facebook-share-button').href = facebookShareUrl()
 }
 
-function unpauseGame() {
-  paused = false;
-  drawWorld();
+function twitterShareUrl(maxScore, maxScoreGrid) {
+  var tweet = maxScoreGrid + '| Got ' + maxScore +
+    ' points playing this stupid snake game on the address bar!';
+  return 'https://twitter.com/intent/tweet' +
+    '?url=' + encodeURIComponent(canonicalUrl()) +
+    '&text=' + encodeURIComponent(tweet)
 }
 
-var DIRECTIONS_BY_KEY_CODE = {
-  37: LEFT, 38: UP, 39: RIGHT, 40: DOWN,
-  65: LEFT, 87: UP, 68: RIGHT, 83: DOWN
-};
-
-document.addEventListener('keydown', function (event) {
-  var key = event.keyCode;
-  if (key in DIRECTIONS_BY_KEY_CODE) {
-    changeDirection(DIRECTIONS_BY_KEY_CODE[key]);
-  }
-});
-
-function setDirectionButton(id, dir) {
-  document.getElementById(id).addEventListener('mousedown', function () {
-    changeDirection(dir);
-  });
+function facebookShareUrl() {
+  return 'https://www.facebook.com/sharer/sharer.php?u=' +
+    encodeURIComponent(canonicalUrl());
 }
 
-setDirectionButton('up', UP);
-setDirectionButton('down', DOWN);
-setDirectionButton('left', LEFT);
-setDirectionButton('right', RIGHT);
+function canonicalUrl() {
+  return $('link[rel=canonical]').href;
+}
 
-window.addEventListener('blur', function() { pauseGame(); });
-window.addEventListener('focus', function() { unpauseGame(); });
+var $ = document.querySelector.bind(document);
 
-drawMaxScore();
-init();
-window.requestAnimationFrame(onAnimationFrame);
+main();
