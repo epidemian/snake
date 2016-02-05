@@ -34,6 +34,10 @@ main {
   display: none;
 }
 
+.share-button {
+  display: inline-block;
+}
+
 .share-button img{
   width: 1.5rem;
   vertical-align: middle;

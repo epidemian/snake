@@ -10,6 +10,8 @@ var DOWN = {x: 0, y: 1};
 var LEFT = {x: -1, y: 0};
 var RIGHT = {x: 1, y: 0};
 var INITIAL_SNAKE_LENGTH = 4;
+var CANONICAL_URL = location.protocol + '//' + location.host +
+  location.pathname;
 
 var grid;
 var snake;
@@ -97,13 +99,6 @@ function checkMaxScore() {
   }
 }
 
-function twitterShareUrl(maxScore, maxScoreGrid) {
-  var tweet = maxScoreGrid + '| Got ' + maxScore +
-    ' points playing this stupid snake game on the address bar!';
-  return 'https://twitter.com/intent/tweet' +
-    '?url=https%3A%2F%2Fepidemian.github.io%2Fsnakebar' +
-    '&text=' + encodeURIComponent(tweet)
-}
 function drawMaxScore() {
   var maxScore = window.localStorage.maxScore;
   if (maxScore == null) return;
@@ -111,7 +106,22 @@ function drawMaxScore() {
   document.getElementById('max-score').innerText = maxScore;
   document.getElementById('max-score-grid').innerText = maxScoreGrid;
   document.getElementById('max-score-container').classList.remove('invisible');
-  document.getElementById('twitter-share-button').href = twitterShareUrl(maxScore, maxScoreGrid)
+  document.getElementById('twitter-share-button').href =
+    twitterShareUrl(maxScore, maxScoreGrid);
+  document.getElementById('facebook-share-button').href = facebookShareUrl()
+}
+
+function twitterShareUrl(maxScore, maxScoreGrid) {
+  var tweet = maxScoreGrid + '| Got ' + maxScore +
+    ' points playing this stupid snake game on the address bar!';
+  return 'https://twitter.com/intent/tweet' +
+    '?url=' + encodeURIComponent(CANONICAL_URL) +
+    '&text=' + encodeURIComponent(tweet)
+}
+
+function facebookShareUrl() {
+  return 'https://www.facebook.com/sharer/sharer.php?u=' +
+    encodeURIComponent(CANONICAL_URL);
 }
 
 function drawWorld() {
