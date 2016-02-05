@@ -91,18 +91,18 @@ function currentScore() {
 
 function checkMaxScore() {
   var score = currentScore();
-  var maxScore = parseInt(window.localStorage.maxScore || 0);
+  var maxScore = parseInt(localStorage.maxScore || 0);
   if (score > 0 && score > maxScore) {
-    window.localStorage.maxScore = score;
-    window.localStorage.maxScoreGrid = gridString();
+    localStorage.maxScore = score;
+    localStorage.maxScoreGrid = gridString();
     drawMaxScore()
   }
 }
 
 function drawMaxScore() {
-  var maxScore = window.localStorage.maxScore;
+  var maxScore = localStorage.maxScore;
   if (maxScore == null) return;
-  var maxScoreGrid = window.localStorage.maxScoreGrid;
+  var maxScoreGrid = localStorage.maxScoreGrid;
   document.getElementById('max-score').innerText = maxScore;
   document.getElementById('max-score-grid').innerText = maxScoreGrid;
   document.getElementById('max-score-container').classList.remove('invisible');
@@ -126,7 +126,7 @@ function facebookShareUrl() {
 
 function drawWorld() {
   var hash = '#|' + gridString() + '| score: ' + currentScore();
-  window.history.replaceState(null, null, hash);
+  history.replaceState(null, null, hash);
 }
 
 function gridString() {
@@ -192,8 +192,9 @@ function changeDirection(newDir) {
 
 function pauseGame() {
   paused = true;
-  window.history.replaceState(null, null, window.location.hash + ' (paused)')
+  window.history.replaceState(null, null, location.hash + ' (paused)')
 }
+
 function unpauseGame() {
   paused = false;
   drawWorld();
@@ -203,6 +204,7 @@ var DIRECTIONS_BY_KEY_CODE = {
   37: LEFT, 38: UP, 39: RIGHT, 40: DOWN,
   65: LEFT, 87: UP, 68: RIGHT, 83: DOWN
 };
+
 document.addEventListener('keydown', function (event) {
   var key = event.keyCode;
   if (key in DIRECTIONS_BY_KEY_CODE) {
@@ -215,6 +217,7 @@ function setDirectionButton(id, dir) {
     changeDirection(dir);
   });
 }
+
 setDirectionButton('up', UP);
 setDirectionButton('down', DOWN);
 setDirectionButton('left', LEFT);
