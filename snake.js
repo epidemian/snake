@@ -126,13 +126,11 @@ function drawWorld() {
 
 function gridString() {
   var str = '';
-  var length = GRID_WIDTH / 2;
-  for (var i = 0; i < length; i++) {
+  for (var x = 0; x < GRID_WIDTH; x += 2) {
     // Unicode Braille patterns are 256 code points going from 0x2800 to 0x28FF.
     // They follow a binary pattern where the bits are, from least significant
     // to most: ⠁⠂⠄⠈⠐⠠⡀⢀
     // So, for example, 147 (10010011) corresponds to ⢓
-    var x = i * 2;
     var n = 0
       | bitAt(x, 0) << 0
       | bitAt(x, 1) << 1
