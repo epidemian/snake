@@ -52,6 +52,10 @@
   ga('create', 'UA-35084691-2', 'auto');
   ga('send', 'pageview');
   </script>
+  <script>
+    document.documentElement.className +=
+      'ontouchstart' in document.documentElement ? ' touch' : ' no-touch'
+  </script>
   <script src="snake.js"></script>
 </body>
 </html>
