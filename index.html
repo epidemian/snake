@@ -1,61 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Address Bar Snake!</title>
-  <meta name="description" content="Play the classic snake game on the browser address bar."/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="canonical" href="https://epidemian.github.io/snakebar">
-  <link rel="shortcut icon" href="favicon.ico" />
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main>
-    <p>
-      Use the arrow keys or WASD to control the snake on the address bar.
-      <span class="controls-text">Or these:</span>
-    </p>
-    <div class="controls">
-      <div class="row">
-        <button class="dummy"></button>
-        <button id="up">▲</button>
-        <button class="dummy"></button>
-      </div>
-      <div class="row">
-        <button id="left">◀</button>
-        <button id="down">▼</button>
-        <button id="right">▶</button>
-      </div>
-    </div>
-    <div id="max-score-container" class="invisible">
-      Your highest score is <span id="max-score"></span> points!
-      <span id="max-score-grid"></span><br>
-      Proudly share it:
-      <a id="twitter-share-button" class="share-button" href="" title="Tweet" target="_blank">
-        <img src="images/share-twitter.svg">
-      </a>
-      <a id="facebook-share-button" class="share-button" href="" title="Share on Facebook" target="_blank">
-        <img src="images/share-facebook.svg">
-      </a>
-    </div>
-  </main>
-  <footer>
-    Made with (⠠⠇) by <a href="https://twitter.com/epidemian" target="_blank">@epidemian</a> |
-    <a href="https://github.com/epidemian/snakebar" target="_blank">Code</a>
-  </footer>
-  <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<html lang=en>
+<meta charset=utf-8>
+<title>Address Bar Snake!</title>
+<meta name=description content="Play the classic snake game on the browser address bar."/>
+<meta name=viewport content="width=device-width, initial-scale=1.0"/>
+<link rel=canonical href=https://epidemian.github.io/snakebar>
+<link rel="shortcut icon" href=favicon.ico />
+<link rel=stylesheet href=style.css>
+<p>
+  Use the arrow keys or WASD to control the snake on the address bar.
+  <span class=controls-text>Or these:</span>
+</p>
+<div class=controls>
+  <div class=row>
+    <button class=dummy></button>
+    <button id=up>▲</button>
+    <button class=dummy></button>
+  </div>
+  <div class=row>
+    <button id=left>◀</button>
+    <button id=down>▼</button>
+    <button id=right>▶</button>
+  </div>
+</div>
+<div id=max-score-container class=invisible>
+  Your highest score is <span id=max-score></span> points!
+  <span id=max-score-grid></span><br>
+  Proudly share it:
+  <a id=twitter-share-button class=share-button href="" title=Tweet target=_blank>
+    <img src=images/share-twitter.svg>
+  </a>
+  <a id=facebook-share-button class=share-button href="" title="Share on Facebook" target=_blank>
+    <img src=images/share-facebook.svg>
+  </a>
+</div>
+<footer>
+  Made with (⠠⠇) by <a href=https://twitter.com/epidemian target=_blank>@epidemian</a> |
+  <a href=https://github.com/epidemian/snakebar target=_blank>Code</a>
+</footer>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-35084691-2', 'auto');
-  ga('send', 'pageview');
-  </script>
-  <script>
-    document.documentElement.className +=
-      'ontouchstart' in document.documentElement ? ' touch' : ' no-touch'
-  </script>
-  <script src="snake.js"></script>
-</body>
-</html>
+ga('create', 'UA-35084691-2', 'auto');
+ga('send', 'pageview');
+</script>
+<script>
+  document.documentElement.classList.add(
+    'ontouchstart' in document.documentElement ? 'touch' : 'no-touch'
+  )
+</script>
+<script src=snake.js></script>
