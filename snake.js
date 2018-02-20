@@ -52,7 +52,7 @@ function setupEventHandlers() {
 
   window.onblur = function pauseGame() {
     gamePaused = true;
-    window.history.replaceState(null, null, location.hash + ' (paused)')
+    window.history.replaceState(null, null, location.search + '[paused]')
   };
 
   window.onfocus = function unpauseGame() {
@@ -120,8 +120,8 @@ function endGame() {
 }
 
 function drawWorld() {
-  var hash = '#|' + gridString() + '| score: ' + currentScore();
-  history.replaceState(null, null, hash);
+  var query = '?|' + gridString() + '|[score:' + currentScore() + ']';
+  history.replaceState(null, null, query);
 }
 
 function gridString() {
