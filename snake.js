@@ -207,7 +207,7 @@ function drawMaxScore() {
 
 function twitterShareUrl(maxScore, maxScoreGrid) {
   var tweet = maxScoreGrid + '| Got ' + maxScore +
-    ' points playing this stupid snake game on the address bar!';
+    ' points playing this stupid snake game on the browser URL!';
   return 'https://twitter.com/intent/tweet' +
     '?url=' + encodeURIComponent(canonicalUrl()) +
     '&text=' + encodeURIComponent(tweet)
