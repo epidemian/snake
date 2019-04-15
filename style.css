@@ -75,14 +75,66 @@ footer {
   display: none;
 }
 
-/*
-Don't show touch controls on non-touch devices.
-This is not ideal; it'd be better to only show the touch controls on devices
-that don't have a physical keyboard, but, alas, that's not easy to detect.
-*/
-.no-touch .controls,
-.no-touch .controls-text {
+.touch .no-touch-only,
+.no-touch .touch-only {
   display: none;
+}
+
+.expandable {
+  overflow: hidden;
+}
+
+.expandable-checkbox {
+  display: none;
+}
+
+.expandable-content {
+  position: relative;
+  transition: all .4s;
+  display: inline-block;
+}
+
+.expandable-toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateX(100%);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.expandable-toggle .collapsed,
+.expandable-toggle .expanded {
+  position: absolute;
+}
+
+.help-toggle {
+  color: #0bc3ff;;
+}
+
+.high-score-toggle {
+  color: #ff8c0b;
+}
+
+.expandable-toggle .expanded {
+  color: #aaa;
+}
+
+.expandable-toggle .expanded {
+  opacity: 0;
+}
+
+/* Checkbox hack to make content toggleable without JS. */
+.expandable-checkbox:not(:checked) ~ .expandable-content {
+  transform: translateX(-100%);
+}
+
+.expandable-checkbox:checked ~ .expandable-content .expandable-toggle .expanded {
+  opacity: 1;
+}
+
+.expandable-checkbox:checked ~ .expandable-content .expandable-toggle .collapsed {
+  opacity: 0;
 }
 
 @media (max-width: 30em) {
