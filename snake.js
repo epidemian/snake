@@ -118,6 +118,7 @@ function endGame() {
     localStorage.maxScore = score;
     localStorage.maxScoreGrid = gridString();
     drawMaxScore()
+    showMaxScore()
   }
 }
 
@@ -206,6 +207,12 @@ function drawMaxScore() {
   $('#max-score-container').classList.remove('invisible');
   $('#twitter-share-button').href = twitterShareUrl(maxScore, maxScoreGrid);
   $('#facebook-share-button').href = facebookShareUrl()
+}
+
+// Expands the high score details if collapsed. Only done when beating the
+// highest score, to grab the player's attention.
+function showMaxScore() {
+  $('#max-score-container input[type=checkbox]').checked = true
 }
 
 function twitterShareUrl(maxScore, maxScoreGrid) {
