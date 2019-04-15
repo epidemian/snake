@@ -13,6 +13,7 @@ var grid;
 var snake;
 var currentDirection;
 var moveQueue;
+var hasMoved;
 var gamePaused = false;
 
 function main() {
@@ -71,6 +72,7 @@ function startGame() {
   }
   currentDirection = RIGHT;
   moveQueue = [];
+  hasMoved = false;
   dropFood();
 }
 
@@ -112,7 +114,7 @@ function updateWorld() {
 function endGame() {
   var score = currentScore();
   var maxScore = parseInt(localStorage.maxScore || 0);
-  if (score > 0 && score > maxScore) {
+  if (score > 0 && score > maxScore && hasMoved) {
     localStorage.maxScore = score;
     localStorage.maxScoreGrid = gridString();
     drawMaxScore()
@@ -192,6 +194,7 @@ function changeDirection(newDir) {
     // Process moves in a queue to prevent multiple direction changes per tick.
     moveQueue.unshift(newDir);
   }
+  hasMoved = true;
 }
 
 function drawMaxScore() {
