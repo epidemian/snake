@@ -53,17 +53,12 @@ body {
   visibility: hidden;
 }
 
-.share-button {
-  display: inline-block;
-}
-
-.share-button img{
-  width: 1.5rem;
-  vertical-align: middle;
-}
-
 #max-score-grid {
   background: #eee;
+}
+
+#share {
+  display: inline-block;
 }
 
 footer {
@@ -72,7 +67,7 @@ footer {
 }
 
 .invisible {
-  display: none;
+  display: none !important;
 }
 
 .touch .no-touch-only,
@@ -80,6 +75,8 @@ footer {
   display: none;
 }
 
+/* Expandable "component". Uses the checkbox hack to expand and collapse their
+   content without JS */
 .expandable {
   overflow: hidden;
 }
@@ -142,3 +139,33 @@ footer {
     font-size: 1.3em;
   }
 }
+
+/* Icon font styles copied from Fontello. */
+@font-face {
+  font-family: 'icons';
+  src: url('icons.woff2?40046441') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-share:before { content: '\e811'; }

@@ -205,8 +205,14 @@ function drawMaxScore() {
   $('#max-score').innerText = maxScore;
   $('#max-score-grid').innerText = maxScoreGrid;
   $('#max-score-container').classList.remove('invisible');
-  $('#twitter-share-button').href = twitterShareUrl(maxScore, maxScoreGrid);
-  $('#facebook-share-button').href = facebookShareUrl()
+
+  if (navigator.share) {
+    $('#share').classList.remove('invisible');
+    $('#share').onclick = function (e) {
+      e.preventDefault();
+      shareScore(maxScore, maxScoreGrid);
+    };
+  }
 }
 
 // Expands the high score details if collapsed. Only done when beating the
@@ -215,21 +221,10 @@ function showMaxScore() {
   $('#max-score-container input[type=checkbox]').checked = true
 }
 
-function twitterShareUrl(maxScore, maxScoreGrid) {
-  var tweet = maxScoreGrid + '| Got ' + maxScore +
-    ' points playing this stupid snake game on the browser URL!';
-  return 'https://twitter.com/intent/tweet' +
-    '?url=' + encodeURIComponent(canonicalUrl()) +
-    '&text=' + encodeURIComponent(tweet)
-}
-
-function facebookShareUrl() {
-  return 'https://www.facebook.com/sharer/sharer.php?u=' +
-    encodeURIComponent(canonicalUrl());
-}
-
-function canonicalUrl() {
-  return $('link[rel=canonical]').href;
+function shareScore(maxScore, maxScoreGrid) {
+  var url = $('link[rel=canonical]').href;
+  var text = `${maxScoreGrid}| Got ${maxScore} points playing this stupid snake game on the browser URL!`
+  navigator.share({ url, text });
 }
 
 var $ = document.querySelector.bind(document);
