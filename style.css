@@ -24,6 +24,10 @@ body {
   padding: 5px 10px;
 }
 
+a {
+  color: #03b778;
+}
+
 .controls {
   display: flex;
   flex-direction: column;
@@ -40,7 +44,7 @@ body {
 
 .controls button {
   flex: 1;
-  color: #666;
+  color: #888;
   font-size: 10vmin;
   background: none;
   border: 2px solid;
@@ -54,7 +58,7 @@ body {
 }
 
 #max-score-grid {
-  background: #eee;
+  background: #8883;
 }
 
 #share {
@@ -137,6 +141,13 @@ footer {
 @media (max-width: 30em) {
   html {
     font-size: 1.3em;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    background: #222;
+    color: #eee;
   }
 }
 
