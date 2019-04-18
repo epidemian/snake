@@ -26,11 +26,19 @@
 <label class=expandable>
   <input type=checkbox class=expandable-checkbox>
   <span class=expandable-content>
+    <span class="help-toggle expand-toggle">?</span>
     <span class=no-touch-only>Use the arrow keys or WASD to control the snake on the URL.</span>
     <span class=touch-only>Use the arrows to control the snake on the URL.</span>
-    <span class=expandable-toggle>
-      <span class="help-toggle collapsed">?</span>
-      <span class=expanded>〈</span>
+    <span class=collapse-toggle>〈</span>
+  </span>
+</label>
+<label id=max-score-container class="expandable invisible">
+  <input type=checkbox class=expandable-checkbox>
+  <span class=expandable-content>
+    <span class="high-score-toggle expand-toggle">!</span>
+    Your highest score is <span id=max-score></span> points!
+    <span id=max-score-grid></span><a id=share class=invisible href=#><i class=icon-share></i>Share</a>
+    <span class=collapse-toggle>〈</span>
     </span>
   </span>
 </label>
@@ -46,17 +54,6 @@
     <button id=right>▶</button>
   </div>
 </div>
-<label id=max-score-container class="expandable invisible">
-  <input type=checkbox class=expandable-checkbox>
-  <span class=expandable-content>
-    Your highest score is <span id=max-score></span> points!
-    <span id=max-score-grid></span><a id=share class=invisible href=#><i class=icon-share></i>Share</a>
-    <span class=expandable-toggle>
-      <span class="high-score-toggle collapsed">!</span>
-      <span class=expanded>〈</span>
-    </span>
-  </span>
-</label>
 <footer>
   Made with (⠠⠇) by <a href=https://twitter.com/epidemian target=_blank>@epidemian</a> |
   <a href=https://github.com/epidemian/snake target=_blank>Code</a>

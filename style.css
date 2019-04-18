@@ -85,24 +85,28 @@ footer {
   display: none;
 }
 
+.expandable-content,
+.expand-toggle,
+.collapse-toggle {
+  transition: all .4s;
+}
+
 .expandable-content {
   position: relative;
-  transition: all .4s;
   display: inline-block;
 }
 
-.expandable-toggle {
+.expand-toggle {
   position: absolute;
   right: 0;
   top: 0;
   transform: translateX(100%);
-  font-weight: bold;
-  cursor: pointer;
 }
 
-.expandable-toggle .collapsed,
-.expandable-toggle .expanded {
-  position: absolute;
+.expand-toggle,
+.collapse-toggle {
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .help-toggle {
@@ -113,24 +117,20 @@ footer {
   color: #ff8c0b;
 }
 
-.expandable-toggle .expanded {
+.collapse-toggle {
   color: #aaa;
-}
-
-.expandable-toggle .expanded {
   opacity: 0;
 }
 
-/* Checkbox hack to make content toggleable without JS. */
 .expandable-checkbox:not(:checked) ~ .expandable-content {
   transform: translateX(-100%);
 }
 
-.expandable-checkbox:checked ~ .expandable-content .expandable-toggle .expanded {
+.expandable-checkbox:checked ~ .expandable-content .collapse-toggle {
   opacity: 1;
 }
 
-.expandable-checkbox:checked ~ .expandable-content .expandable-toggle .collapsed {
+.expandable-checkbox:checked ~ .expandable-content .expand-toggle {
   opacity: 0;
 }
 
