@@ -53,7 +53,7 @@ function setupEventHandlers() {
 
   window.onblur = function pauseGame() {
     gamePaused = true;
-    window.history.replaceState(null, null, location.search + '[paused]')
+    window.history.replaceState(null, null, location.hash + '[paused]')
   };
 
   window.onfocus = function unpauseGame() {
@@ -123,8 +123,20 @@ function endGame() {
 }
 
 function drawWorld() {
-  var query = '?|' + gridString() + '|[score:' + currentScore() + ']';
-  history.replaceState(null, null, query);
+  var hash = '#|' + gridString() + '|[score:' + currentScore() + ']';
+  history.replaceState(null, null, hash);
+
+  // Some browsers have a rate limit on history.replaceState() calls, resulting
+  // in the URL not updating at all for a couple of seconds. In those cases,
+  // location.hash is updated directly, which is unfortunate, as it causes a new
+  // navigation entry to be created each time, effectively hijacking the user's
+  // back button.
+  if (decodeURIComponent(location.hash) !== hash) {
+    console.warn(
+      'history.replaceState() throttling detected. Using location.hash fallback'
+    )
+    location.hash = hash
+  }
 }
 
 function gridString() {
