@@ -17,6 +17,7 @@ var hasMoved;
 var gamePaused = false;
 
 function main() {
+  cleanUrl();
   setupEventHandlers();
   drawMaxScore();
   startGame();
@@ -31,6 +32,12 @@ function main() {
     }
     window.requestAnimationFrame(frameHandler);
   });
+}
+
+function cleanUrl() {
+  // In order to have the most space for the game, shown on the URL hash,
+  // remove all query string parameters and trailing / from the URL.
+  history.replaceState(null, null, location.pathname.replace(/\b\/$/, ''))
 }
 
 function setupEventHandlers() {
