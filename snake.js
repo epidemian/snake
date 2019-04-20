@@ -130,7 +130,7 @@ function endGame() {
 }
 
 function drawWorld() {
-  var hash = '#|' + gridString() + '|[score:' + currentScore() + ']';
+  var hash = `#|${gridString()}|[score:${currentScore()}]`;
   history.replaceState(null, null, hash);
 
   // Some browsers have a rate limit on history.replaceState() calls, resulting
@@ -242,7 +242,7 @@ function showMaxScore() {
 
 function shareScore(maxScore, maxScoreGrid) {
   var url = $('link[rel=canonical]').href;
-  var text = `${maxScoreGrid}| Got ${maxScore} points playing this stupid snake game on the browser URL!`
+  var text = `|${maxScoreGrid}| Got ${maxScore} points playing this stupid snake game on the browser URL!`
   navigator.share({ url, text });
 }
 
