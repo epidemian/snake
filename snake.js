@@ -53,10 +53,10 @@ function setupEventHandlers() {
     }
   };
 
-  $('#up').onmousedown = function () { changeDirection(UP); };
-  $('#down').onmousedown = function () { changeDirection(DOWN); };
-  $('#left').onmousedown = function () { changeDirection(LEFT); };
-  $('#right').onmousedown = function () { changeDirection(RIGHT); };
+  setArrowButtonHandler('#up', UP);
+  setArrowButtonHandler('#down', DOWN);
+  setArrowButtonHandler('#left', LEFT);
+  setArrowButtonHandler('#right', RIGHT);
 
   window.onblur = function pauseGame() {
     gamePaused = true;
@@ -66,6 +66,17 @@ function setupEventHandlers() {
   window.onfocus = function unpauseGame() {
     gamePaused = false;
     drawWorld();
+  };
+}
+
+function setArrowButtonHandler(selector, direction) {
+  var button = $(selector);
+  // mousedown only fires after whole "touch" on touch devices, so we prefer to
+  // respond to move the snake, but also support mousedown just in case...
+  button.ontouchstart = button.onmousedown = function (e) {
+    changeDirection(direction);
+    // Prevent mousedown being triggered in case this is touchstart.
+    e.preventDefault();
   };
 }
 
