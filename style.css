@@ -74,8 +74,8 @@ footer {
   display: none !important;
 }
 
-.touch .no-touch-only,
-.no-touch .touch-only {
+:root.touch .no-touch-only,
+:root:not(.touch) .touch-only {
   display: none;
 }
 

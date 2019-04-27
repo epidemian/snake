@@ -18,11 +18,12 @@
   gtag('config', 'UA-35084691-2');
 </script>
 <script>
-  document.documentElement.classList.add(
-    'ontouchstart' in document.documentElement ? 'touch' : 'no-touch'
-  )
+  if ('ontouchstart' in document.documentElement) {
+    document.documentElement.classList.add('touch')
+  }
 </script>
 </head>
+<noscript>⚠ Sorry, this game requires JavaScript.</noscript>
 <label class=expandable>
   <input type=checkbox class=expandable-checkbox>
   <span class=expandable-content>
