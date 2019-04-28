@@ -29,32 +29,41 @@ a {
 }
 
 .controls {
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0;
-  align-self: center;
-  width: 80vmin;
-  height: 60vmin;
+  display: grid;
+  grid-template-areas: ".    up   ."
+                       "left down right";
+  /* Limit the size of the controls by the viewport size. */
+  width: 75vmin;
+  height: 50vmin;
+  margin: 10px auto;
 }
 
-.controls .row {
-  flex: 1;
-  display: flex;
-}
+#up { grid-area: up; }
+#down { grid-area: down; }
+#left { grid-area: left; }
+#right { grid-area: right; }
 
 .controls button {
-  flex: 1;
   color: #888;
-  font-size: 10vmin;
+  font-size: 8vmin;
   background: none;
   border: 2px solid;
   margin: 2px;
   border-radius: 7px;
-  cursor: pointer;
 }
 
-.controls .dummy {
-  visibility: hidden;
+@media (min-width: 10cm) and (min-height: 8cm) {
+  /* Avoid controls getting too big on larger touch devices. */
+  .controls {
+    position: absolute;
+    width: 7.5cm;
+    height: 5cm;
+    bottom: 1.5cm;
+    right: 1.5cm;
+  }
+  .controls button {
+    font-size: 0.8cm;
+  }
 }
 
 #max-score-grid {
@@ -136,12 +145,6 @@ footer {
 
 .expandable-checkbox:checked ~ .expandable-content .expand-toggle {
   opacity: 0;
-}
-
-@media (max-width: 30em) {
-  html {
-    font-size: 1.3em;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
