@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var GRID_WIDTH = 40;
 var SNAKE_CELL = 1;
@@ -37,13 +37,15 @@ function main() {
 function cleanUrl() {
   // In order to have the most space for the game, shown on the URL hash,
   // remove all query string parameters and trailing / from the URL.
-  history.replaceState(null, null, location.pathname.replace(/\b\/$/, ''))
+  history.replaceState(null, null, location.pathname.replace(/\b\/$/, ''));
 }
 
 function setupEventHandlers() {
   var directionsByKey = {
+    // Arrows
     37: LEFT, 38: UP, 39: RIGHT, 40: DOWN,
-    65: LEFT, 87: UP, 68: RIGHT, 83: DOWN
+    // WASD
+    87: UP, 65: LEFT, 83: DOWN, 68: RIGHT
   };
 
   document.onkeydown = function (event) {
@@ -63,7 +65,7 @@ function setupEventHandlers() {
 
   window.onblur = function pauseGame() {
     gamePaused = true;
-    window.history.replaceState(null, null, location.hash + '[paused]')
+    window.history.replaceState(null, null, location.hash + '[paused]');
   };
 
   window.onfocus = function unpauseGame() {
@@ -78,7 +80,7 @@ function startGame() {
   for (var x = 0; x < INITIAL_SNAKE_LENGTH; x++) {
     var y = 2;
     snake.unshift({x: x, y: y});
-    setCellAt(x, y, SNAKE_CELL)
+    setCellAt(x, y, SNAKE_CELL);
   }
   currentDirection = RIGHT;
   moveQueue = [];
@@ -127,8 +129,8 @@ function endGame() {
   if (score > 0 && score > maxScore && hasMoved) {
     localStorage.maxScore = score;
     localStorage.maxScoreGrid = gridString();
-    drawMaxScore()
-    showMaxScore()
+    drawMaxScore();
+    showMaxScore();
   }
 }
 
@@ -144,8 +146,8 @@ function drawWorld() {
   if (decodeURIComponent(location.hash) !== hash) {
     console.warn(
       'history.replaceState() throttling detected. Using location.hash fallback'
-    )
-    location.hash = hash
+    );
+    location.hash = hash;
   }
 }
 
@@ -200,8 +202,9 @@ function dropFood() {
   }
   var dropCounter = Math.floor(Math.random() * emptyCells);
   for (var i = 0; i < grid.length; i++) {
-    if (grid[i] === SNAKE_CELL)
+    if (grid[i] === SNAKE_CELL) {
       continue;
+    }
     if (dropCounter === 0) {
       grid[i] = FOOD_CELL;
       break;
@@ -222,7 +225,10 @@ function changeDirection(newDir) {
 
 function drawMaxScore() {
   var maxScore = localStorage.maxScore;
-  if (maxScore == null) return;
+  if (maxScore == null) {
+    return;
+  }
+
   var maxScoreGrid = localStorage.maxScoreGrid;
   $('#max-score').innerText = maxScore;
   $('#max-score-grid').innerText = maxScoreGrid;
@@ -240,14 +246,14 @@ function drawMaxScore() {
 // Expands the high score details if collapsed. Only done when beating the
 // highest score, to grab the player's attention.
 function showMaxScore() {
-  $('#max-score-container input[type=checkbox]').checked = true
+  $('#max-score-container input[type=checkbox]').checked = true;
 }
 
-function shareScore(maxScore, maxScoreGrid) {
+function shareScore(score, grid) {
   navigator.share({
     url: $('link[rel=canonical]').href,
-    text: '|' + maxScoreGrid + '| Got ' + maxScore +
-    ' points playing this stupid snake game on the browser URL!'
+    text: '|' + grid + '| Got ' + score +
+      ' points playing this stupid snake game on the browser URL!'
   });
 }
 
