@@ -8,17 +8,15 @@ html, body, h1, p {
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-}
-
 html {
+  height: 100%;
   font-family: Arial, sans-serif;
   color: #222;
   line-height: 1.5;
 }
 
 body {
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   padding: 5px 10px;
@@ -56,7 +54,7 @@ a {
   outline: none;
 }
 
-@media (min-width: 10cm) and (min-height: 8cm) {
+@media (min-width: 10cm) and (min-height: 10cm) {
   /* Avoid controls getting too big on larger touch devices. */
   .controls {
     position: absolute;
@@ -71,8 +69,11 @@ a {
   }
 }
 
+#url,
 #max-score-grid {
   background: #8883;
+  padding: 2px;
+  border-radius: 3px;
 }
 
 #share {
@@ -111,7 +112,6 @@ footer {
 
 .expandable-content {
   position: relative;
-  display: inline-block;
 }
 
 .expand-toggle {
@@ -142,6 +142,7 @@ footer {
 
 .expandable-checkbox:not(:checked) ~ .expandable-content {
   transform: translateX(-100%);
+  max-height: 1.5rem;
 }
 
 .expandable-checkbox:checked ~ .expandable-content .collapse-toggle {

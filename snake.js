@@ -15,11 +15,13 @@ var currentDirection;
 var moveQueue;
 var hasMoved;
 var gamePaused = false;
+var urlRevealed = false;
 
 function main() {
   cleanUrl();
   setupEventHandlers();
   drawMaxScore();
+  initUrlRevealed();
   startGame();
 
   var lastFrameTime = new Date;
@@ -72,6 +74,28 @@ function setupEventHandlers() {
     gamePaused = false;
     drawWorld();
   };
+
+  $('#reveal-url').onclick = function (e) {
+    e.preventDefault();
+    setUrlRevealed(!urlRevealed);
+  };
+}
+
+function initUrlRevealed() {
+  setUrlRevealed(Boolean(localStorage.urlRevealed));
+}
+
+// Some browsers don't display the page URL, either partially (e.g. Safari) or
+// entirely (e.g. mobile in-app web-views). To make the game playable in such
+// cases, the player can choose to "reveal" the URL within the page body.
+function setUrlRevealed(value) {
+  urlRevealed = value;
+  $('#url-container').classList.toggle('invisible', !urlRevealed);
+  if (urlRevealed) {
+    localStorage.urlRevealed = 'y';
+  } else {
+    delete localStorage.urlRevealed;
+  }
 }
 
 function startGame() {
@@ -148,6 +172,10 @@ function drawWorld() {
       'history.replaceState() throttling detected. Using location.hash fallback'
     );
     location.hash = hash;
+  }
+
+  if (urlRevealed) {
+    $('#url').textContent = decodeURI(location.href);
   }
 }
 

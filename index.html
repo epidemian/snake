@@ -24,23 +24,25 @@
 </script>
 </head>
 <noscript>⚠ Sorry, this game requires JavaScript.</noscript>
+<div id=url-container class=invisible>URL: <span id=url></span></div>
 <label class=expandable>
   <input type=checkbox class=expandable-checkbox>
-  <span class=expandable-content>
+  <div class=expandable-content>
     <span class="help-toggle expand-toggle">?</span>
     <span class=no-touch-only>Use the arrow keys or WASD to control the snake on the URL.</span>
     <span class=touch-only>Use the arrows to control the snake on the URL.</span>
+    <a id=reveal-url href=#>Click here</a> if you can't see the page URL.
     <span class=collapse-toggle>〈</span>
-  </span>
+  </div>
 </label>
 <label id=max-score-container class="expandable invisible">
   <input type=checkbox class=expandable-checkbox>
-  <span class=expandable-content>
+  <div class=expandable-content>
     <span class="high-score-toggle expand-toggle">!</span>
     Your highest score is <span id=max-score></span> points!
     <span id=max-score-grid></span><a id=share class=invisible href=#><i class=icon-share></i>Share</a>
     <span class=collapse-toggle>〈</span>
-    </span>
+    </div>
   </span>
 </label>
 <div class="controls touch-only">
