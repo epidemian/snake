@@ -159,7 +159,7 @@ function endGame() {
 }
 
 function drawWorld() {
-  var hash = '#|' + gridString() + '|[score:' + currentScore() + ']';
+  var hash = '# |' + gridString() + ' | [score:' + currentScore() + ']';
   history.replaceState(null, null, hash);
 
   // Some browsers have a rate limit on history.replaceState() calls, resulting
