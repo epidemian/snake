@@ -37,6 +37,8 @@ function main() {
 }
 
 function getFrameTime() {
+  // Use performance.now() if available to get current Frame Time
+  // Older browsers may not support performance.now() so, fallback to Date.now()
   return performance && performance.now ? performance.now() : Date.now();
 }
 
