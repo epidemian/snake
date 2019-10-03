@@ -24,9 +24,9 @@ function main() {
   initUrlRevealed();
   startGame();
 
-  var lastFrameTime = getFrameTime();
+  var lastFrameTime = Date.now();
   window.requestAnimationFrame(function frameHandler() {
-    var now = getFrameTime();
+    var now = Date.now();
     if (!gamePaused && now - lastFrameTime >= tickTime()) {
       updateWorld();
       drawWorld();
@@ -34,12 +34,6 @@ function main() {
     }
     window.requestAnimationFrame(frameHandler);
   });
-}
-
-function getFrameTime() {
-  // Use performance.now() if available to get current Frame Time
-  // Older browsers may not support performance.now() so, fallback to Date.now()
-  return performance && performance.now ? performance.now() : Date.now();
 }
 
 function cleanUrl() {
