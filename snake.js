@@ -24,9 +24,9 @@ function main() {
   initUrlRevealed();
   startGame();
 
-  var lastFrameTime = new Date;
+  var lastFrameTime = Date.now();
   window.requestAnimationFrame(function frameHandler() {
-    var now = new Date;
+    var now = Date.now();
     if (!gamePaused && now - lastFrameTime >= tickTime()) {
       updateWorld();
       drawWorld();
