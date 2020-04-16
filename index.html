@@ -25,25 +25,23 @@
 </head>
 <noscript>⚠ Sorry, this game requires JavaScript.</noscript>
 <div id=url-container class=invisible>URL: <span id=url></span></div>
-<label class=expandable>
-  <input type=checkbox class=expandable-checkbox>
+<input type=checkbox id=help-checkbox class=expandable-checkbox>
+<label for=help-checkbox class=expandable>
   <div class=expandable-content>
     <span class="help-toggle expand-toggle">?</span>
     <span class=no-touch-only>Use the arrow keys or WASD to control the snake on the URL.</span>
     <span class=touch-only>Use the arrows to control the snake on the URL.</span>
-    <a id=reveal-url href=#>Click here</a> if you can't see the page URL.
-    <span class=collapse-toggle>〈</span>
+    <a id=reveal-url href=#>Click here</a> if you can't see the page URL.&nbsp;<span class=collapse-toggle>〈</span>
   </div>
 </label>
-<label id=max-score-container class="expandable invisible">
-  <input type=checkbox class=expandable-checkbox>
+<input type=checkbox id=max-score-checkbox class=expandable-checkbox>
+<label for=max-score-checkbox id=max-score-container class="expandable invisible">
   <div class=expandable-content>
     <span class="high-score-toggle expand-toggle">!</span>
     Your highest score is <span id=max-score></span> points!
-    <span id=max-score-grid></span><a id=share class=invisible href=#><i class=icon-share></i>Share</a>
-    <span class=collapse-toggle>〈</span>
+    <span id=max-score-grid></span><a id=share class=invisible href=#><i class=icon-share></i>Share</a>&nbsp;<span class=collapse-toggle>〈</span>
     </div>
-  </span>
+  </head>
 </label>
 <div class="controls touch-only">
   <button id=up>▲&#xFE0E;</button>

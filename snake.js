@@ -274,7 +274,7 @@ function drawMaxScore() {
 // Expands the high score details if collapsed. Only done when beating the
 // highest score, to grab the player's attention.
 function showMaxScore() {
-  $('#max-score-container input[type=checkbox]').checked = true;
+  $('#max-score-checkbox').checked = true;
 }
 
 function shareScore(score, grid) {

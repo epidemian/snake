@@ -111,6 +111,7 @@ footer {
 }
 
 .expandable-content {
+  display: inline-block;
   position: relative;
 }
 
@@ -140,16 +141,19 @@ footer {
   opacity: 0;
 }
 
-.expandable-checkbox:not(:checked) ~ .expandable-content {
-  transform: translateX(-100%);
+.expandable-checkbox:not(:checked) + .expandable {
   max-height: 1.5rem;
 }
 
-.expandable-checkbox:checked ~ .expandable-content .collapse-toggle {
+.expandable-checkbox:not(:checked) + .expandable .expandable-content {
+  transform: translateX(-100%);
+}
+
+.expandable-checkbox:checked + .expandable .collapse-toggle {
   opacity: 1;
 }
 
-.expandable-checkbox:checked ~ .expandable-content .expand-toggle {
+.expandable-checkbox:checked + .expandable .expand-toggle {
   opacity: 0;
 }
 
