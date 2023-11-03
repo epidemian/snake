@@ -8,6 +8,7 @@ var DOWN = {x: 0, y: 1};
 var LEFT = {x: -1, y: 0};
 var RIGHT = {x: 1, y: 0};
 var INITIAL_SNAKE_LENGTH = 4;
+var BRAILLE_SPACE = '\u2800';
 
 var grid;
 var snake;
@@ -16,8 +17,10 @@ var moveQueue;
 var hasMoved;
 var gamePaused = false;
 var urlRevealed = false;
+var browserEscapesBrailleWhitespace;
 
 function main() {
+  detectWhitespaceEscaping();
   cleanUrl();
   setupEventHandlers();
   drawMaxScore();
@@ -34,6 +37,16 @@ function main() {
     }
     window.requestAnimationFrame(frameHandler);
   });
+}
+
+function detectWhitespaceEscaping() {
+  // Write two Braille whitespace characters to the hash because Firefox doesn't
+  // escape single WS chars between words.
+  history.replaceState(null, null, '#' + BRAILLE_SPACE + BRAILLE_SPACE)
+  browserEscapesBrailleWhitespace = location.hash.indexOf(BRAILLE_SPACE) == -1;
+  if (browserEscapesBrailleWhitespace) {
+    console.warn('Browser is escaping whitespace characters on URL')
+  }
 }
 
 function cleanUrl() {
@@ -160,22 +173,30 @@ function endGame() {
 
 function drawWorld() {
   var hash = '#|' + gridString() + '|[score:' + currentScore() + ']';
-  history.replaceState(null, null, hash);
+
+  // Modern browsers escape whitespace characters on the address bar URL for
+  // security reasons. In case this browser does that, replace the empty Braille
+  // character with a non-whitespace (and hopefully non-intrusive) symbol.
+  var sanitizedHash = browserEscapesBrailleWhitespace
+    ? hash.replace(new RegExp(BRAILLE_SPACE, 'g'), '░')
+    : hash;
+
+  history.replaceState(null, null, sanitizedHash);
 
   // Some browsers have a rate limit on history.replaceState() calls, resulting
   // in the URL not updating at all for a couple of seconds. In those cases,
   // location.hash is updated directly, which is unfortunate, as it causes a new
   // navigation entry to be created each time, effectively hijacking the user's
   // back button.
-  if (decodeURIComponent(location.hash) !== hash) {
+  if (decodeURIComponent(location.hash) !== sanitizedHash) {
     console.warn(
       'history.replaceState() throttling detected. Using location.hash fallback'
     );
-    location.hash = hash;
+    location.hash = sanitizedHash;
   }
 
   if (urlRevealed) {
-    $('#url').textContent = decodeURI(location.href);
+    $('#url').textContent = location.href.replace(/#.*$/, hash);
   }
 }
 
