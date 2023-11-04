@@ -331,17 +331,14 @@ function pickWhitespaceReplacementChar() {
     ['૟', 'strange symbols'],
     // U+27CB Mathematical Rising Diagonal, not a great replacement for
     // whitespace, but is close to the correct size and blank enough.
-    ['⟋', 'some weird slashes'],
-    ['░', 'some kind of "fog"']
+    ['⟋', 'some weird slashes']
   ];
 
-  var result
   var N = 5;
   var canvas = document.createElement('canvas');
   var ctx = canvas.getContext('2d');
   ctx.font = '30px system-ui';
   var targetWidth = ctx.measureText(BRAILLE_SPACE.repeat(N)).width;
-  console.log('Target width:', targetWidth);
 
   for (var i = 0; i < candidates.length; i++) {
     var char = candidates[i][0];
@@ -362,18 +359,13 @@ function pickWhitespaceReplacementChar() {
     }
     var notTooDark = coloredPixels / totalPixels < 0.15;
 
-    var charHex = char.codePointAt(0).toString(16).padStart(4, '0').toUpperCase();
-    var widthDiff = (Math.abs(targetWidth - width) / targetWidth * 100).toPrecision(3);
-    var colorPercentage = (coloredPixels / totalPixels * 100).toPrecision(3);
-    console.log(`Character "${char}" (U+${charHex}) is ${width} (width test: ${similarWidth}, diff: ${widthDiff}%) wide and has ${coloredPixels} pixels (color test: ${notTooDark}, ${colorPercentage}%)`)
-
-    if (similarWidth && notTooDark && !result) {
-      result = candidates[i];
+    if (similarWidth && notTooDark) {
+      return candidates[i];
     }
   }
 
-  // U+2591 Light Shade, is generally close to the Braille characters' size.
-  return result || ['░', 'some kind of "fog"'];
+  // Fallback to a safe U+2591 Light Shade.
+  return ['░', 'some kind of "fog"'];
 }
 
 var $ = document.querySelector.bind(document);
