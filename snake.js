@@ -17,10 +17,10 @@ var moveQueue;
 var hasMoved;
 var gamePaused = false;
 var urlRevealed = false;
-var browserEscapesBrailleWhitespace;
+var whitespaceReplacementChar;
 
 function main() {
-  detectWhitespaceEscaping();
+  detectBrowserUrlWhitespaceEscaping();
   cleanUrl();
   setupEventHandlers();
   drawMaxScore();
@@ -39,13 +39,16 @@ function main() {
   });
 }
 
-function detectWhitespaceEscaping() {
+function detectBrowserUrlWhitespaceEscaping() {
   // Write two Braille whitespace characters to the hash because Firefox doesn't
   // escape single WS chars between words.
   history.replaceState(null, null, '#' + BRAILLE_SPACE + BRAILLE_SPACE)
-  browserEscapesBrailleWhitespace = location.hash.indexOf(BRAILLE_SPACE) == -1;
-  if (browserEscapesBrailleWhitespace) {
+  if (location.hash.indexOf(BRAILLE_SPACE) == -1) {
     console.warn('Browser is escaping whitespace characters on URL')
+    var replacementData = pickWhitespaceReplacementChar();
+    whitespaceReplacementChar = replacementData[0];
+    $('#url-escaping-note').classList.remove('invisible');
+    $('#replacement-char-description').textContent = replacementData[1];
   }
 }
 
@@ -174,29 +177,31 @@ function endGame() {
 function drawWorld() {
   var hash = '#|' + gridString() + '|[score:' + currentScore() + ']';
 
+  if (urlRevealed) {
+    // Use the original game representation on the on-DOM view, as there are no
+    // escaping issues there.
+    $('#url').textContent = location.href.replace(/#.*$/, '') + hash;
+  }
+
   // Modern browsers escape whitespace characters on the address bar URL for
   // security reasons. In case this browser does that, replace the empty Braille
   // character with a non-whitespace (and hopefully non-intrusive) symbol.
-  var sanitizedHash = browserEscapesBrailleWhitespace
-    ? hash.replace(new RegExp(BRAILLE_SPACE, 'g'), '░')
-    : hash;
+  if (whitespaceReplacementChar) {
+    hash = hash.replace(/\u2800/g, whitespaceReplacementChar);
+  }
 
-  history.replaceState(null, null, sanitizedHash);
+  history.replaceState(null, null, hash);
 
   // Some browsers have a rate limit on history.replaceState() calls, resulting
   // in the URL not updating at all for a couple of seconds. In those cases,
   // location.hash is updated directly, which is unfortunate, as it causes a new
   // navigation entry to be created each time, effectively hijacking the user's
   // back button.
-  if (decodeURIComponent(location.hash) !== sanitizedHash) {
+  if (decodeURIComponent(location.hash) !== hash) {
     console.warn(
       'history.replaceState() throttling detected. Using location.hash fallback'
     );
-    location.hash = sanitizedHash;
-  }
-
-  if (urlRevealed) {
-    $('#url').textContent = location.href.replace(/#.*$/, hash);
+    location.hash = hash;
   }
 }
 
@@ -304,6 +309,71 @@ function shareScore(score, grid) {
     text: '|' + grid + '| Got ' + score +
       ' points playing this stupid snake game on the browser URL!'
   });
+}
+
+// Super hacky function to pick a suitable character to replace the empty
+// Braille character (u+2800) when the browser escapes whitespace on the URL.
+// We want to pick a character that's close in width to the empty Braille symbol
+// —so the game doesn't stutter horizontally—, and also pick something that's
+// not too visually noisy. So we actually measure how wide and how "dark" some
+// candidate characters are when rendered by the browser (using a canvas) and
+// pick the first that passes both criteria.
+function pickWhitespaceReplacementChar() {
+  var candidates = [
+    // U+0ADF is part of the Gujarati Unicode blocks, but it doesn't have an
+    // associated glyph. For some reason, Chrome renders is as totally blank and
+    // almost the same size as the Braille empty character, but it doesn't
+    // escape it on the address bar URL, so this is the perfect replacement
+    // character. This behavior of Chrome is probably a bug, and might be
+    // changed at any time, and in other browsers like Firefox this character is
+    // rendered with an ugly "undefined" glyph, so it'll get filtered out by the
+    // width or the "blankness" check in either of those cases.
+    ['૟', 'strange symbols'],
+    // U+27CB Mathematical Rising Diagonal, not a great replacement for
+    // whitespace, but is close to the correct size and blank enough.
+    ['⟋', 'some weird slashes'],
+    ['░', 'some kind of "fog"']
+  ];
+
+  var result
+  var N = 5;
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  ctx.font = '30px system-ui';
+  var targetWidth = ctx.measureText(BRAILLE_SPACE.repeat(N)).width;
+  console.log('Target width:', targetWidth);
+
+  for (var i = 0; i < candidates.length; i++) {
+    var char = candidates[i][0];
+    var str = char.repeat(N);
+    var width = ctx.measureText(str).width;
+    var similarWidth = Math.abs(targetWidth - width) / targetWidth <= 0.1;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillText(str, 0, 30);
+    var pixelData = ctx.getImageData(0, 0, width, 30).data;
+    var totalPixels = pixelData.length / 4;
+    var coloredPixels = 0;
+    for (var j = 0; j < totalPixels; j++) {
+      var alpha = pixelData[j * 4 + 3];
+      if (alpha != 0) {
+          coloredPixels++;
+      }
+    }
+    var notTooDark = coloredPixels / totalPixels < 0.15;
+
+    var charHex = char.codePointAt(0).toString(16).padStart(4, '0').toUpperCase();
+    var widthDiff = (Math.abs(targetWidth - width) / targetWidth * 100).toPrecision(3);
+    var colorPercentage = (coloredPixels / totalPixels * 100).toPrecision(3);
+    console.log(`Character "${char}" (U+${charHex}) is ${width} (width test: ${similarWidth}, diff: ${widthDiff}%) wide and has ${coloredPixels} pixels (color test: ${notTooDark}, ${colorPercentage}%)`)
+
+    if (similarWidth && notTooDark && !result) {
+      result = candidates[i];
+    }
+  }
+
+  // U+2591 Light Shade, is generally close to the Braille characters' size.
+  return result || ['░', 'some kind of "fog"'];
 }
 
 var $ = document.querySelector.bind(document);
