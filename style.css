@@ -19,7 +19,9 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 5px 10px;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px;
 }
 
 a {
@@ -89,43 +91,51 @@ footer {
   display: none !important;
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 :root.touch .no-touch-only,
 :root:not(.touch) .touch-only {
   display: none;
 }
 
-/* Expandable "component". Uses the checkbox hack to expand and collapse their
-   content without JS */
 .expandable {
-  overflow: hidden;
-}
-
-.expandable-checkbox {
-  display: none;
-}
-
-.expandable-content,
-.expand-toggle,
-.collapse-toggle {
-  transition: all .4s;
-}
-
-.expandable-content {
-  display: inline-block;
   position: relative;
 }
 
-.expand-toggle {
+.expand-btn,
+.collapse-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  width: 1rem;
+}
+
+.expand-btn,
+.expandable {
+  transition: transform, opacity;
+  transition-duration: .4s;
+}
+
+.expandable {
+  display: inline-block;
+  position: relative;
+  height: 1.5rem;
+  transform: translateX(-100%);
+  /* Clear body padding so it doesn't show on the left of the expand-btn */
+  padding-right: 10px;
+}
+
+.expand-btn {
   position: absolute;
   right: 0;
   top: 0;
   transform: translateX(100%);
-}
-
-.expand-toggle,
-.collapse-toggle {
-  font-weight: bold;
-  cursor: pointer;
+  opacity: 1;
 }
 
 .help-toggle {
@@ -136,24 +146,16 @@ footer {
   color: #ff8c0b;
 }
 
-.collapse-toggle {
+.collapse-btn {
   color: #aaa;
-  opacity: 0;
 }
 
-.expandable-checkbox:not(:checked) + .expandable {
-  max-height: 1.5rem;
+.expandable.expanded {
+  height: auto;
+  transform: none;
 }
 
-.expandable-checkbox:not(:checked) + .expandable .expandable-content {
-  transform: translateX(-100%);
-}
-
-.expandable-checkbox:checked + .expandable .collapse-toggle {
-  opacity: 1;
-}
-
-.expandable-checkbox:checked + .expandable .expand-toggle {
+.expandable.expanded .expand-btn {
   opacity: 0;
 }
 

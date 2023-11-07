@@ -17,24 +17,21 @@
 </head>
 <noscript>⚠ Sorry, this game requires JavaScript.</noscript>
 <div id=url-container class=invisible>URL: <span id=url></span></div>
-<input type=checkbox id=help-checkbox class=expandable-checkbox>
-<label for=help-checkbox class=expandable>
-  <div class=expandable-content>
-    <span class="help-toggle expand-toggle">?</span>
+<div class=expandable>
+  <button class="help-toggle expand-btn" aria-label=Help>?</button>
+  <div class="expandable-content hidden">
     <span class=no-touch-only>Use the arrow keys or WASD to control the snake on the URL.</span>
     <span class=touch-only>Use the arrows to control the snake on the URL.</span>
-    <a id=reveal-url href=#>Click here</a> if you can't see the page URL<span id=url-escaping-note class=invisible> or if it looks messed up with <span id=replacement-char-description></span></span>.&nbsp;<span class=collapse-toggle>〈</span>
+    <a id=reveal-url href=#>Click here</a> if you can't see the page URL<span id=url-escaping-note class=invisible> or if it looks messed up with <span id=replacement-char-description></span></span>.&nbsp;<button class=collapse-btn aria-label=Hide>〈</button>
   </div>
-</label>
-<input type=checkbox id=max-score-checkbox class=expandable-checkbox>
-<label for=max-score-checkbox id=max-score-container class="expandable invisible">
-  <div class=expandable-content>
-    <span class="high-score-toggle expand-toggle">!</span>
+</div>
+<div id=max-score-container class="expandable invisible">
+  <button class="high-score-toggle expand-btn" aria-label="Max score">!</button>
+  <div class="expandable-content hidden">
     Your highest score is <span id=max-score></span> points!
-    <span id=max-score-grid></span><a id=share class=invisible href=#><i class=icon-share></i>Share</a>&nbsp;<span class=collapse-toggle>〈</span>
-    </div>
-  </head>
-</label>
+    <span id=max-score-grid></span><a id=share class=invisible href=#><i class=icon-share></i>Share</a>&nbsp;<button class=collapse-btn aria-label=Hide>〈</button>
+  </div>
+</div>
 <div class="controls touch-only">
   <button id=up>▲&#xFE0E;</button>
   <button id=left>◀&#xFE0E;</button>

@@ -95,6 +95,25 @@ function setupEventHandlers() {
     e.preventDefault();
     setUrlRevealed(!urlRevealed);
   };
+
+  document.querySelectorAll('.expandable').forEach(function (expandable) {
+    var expand = expandable.querySelector('.expand-btn');
+    var collapse = expandable.querySelector('.collapse-btn');
+    var content = expandable.querySelector('.expandable-content');
+    expand.onclick = collapse.onclick = function () {
+      expand.classList.remove('hidden');
+      content.classList.remove('hidden');
+      expandable.classList.toggle('expanded');
+    };
+    // Hide the expand button or the content when the animation ends so those
+    // elements are not interactive anymore.
+    // Surely there's a way to do this with CSS animations more directly.
+    expandable.ontransitionend = function () {
+      var expanded = expandable.classList.contains('expanded');
+      expand.classList.toggle('hidden', expanded);
+      content.classList.toggle('hidden', !expanded);
+    };
+  });
 }
 
 function initUrlRevealed() {
@@ -300,7 +319,8 @@ function drawMaxScore() {
 // Expands the high score details if collapsed. Only done when beating the
 // highest score, to grab the player's attention.
 function showMaxScore() {
-  $('#max-score-checkbox').checked = true;
+  if ($('#max-score-container.expanded')) return
+  $('#max-score-container .expand-btn').click();
 }
 
 function shareScore(score, grid) {
