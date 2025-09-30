@@ -63,7 +63,9 @@ function setupEventHandlers() {
     // Arrows
     37: LEFT, 38: UP, 39: RIGHT, 40: DOWN,
     // WASD
-    87: UP, 65: LEFT, 83: DOWN, 68: RIGHT
+    87: UP, 65: LEFT, 83: DOWN, 68: RIGHT,
+    // hjkl
+    75: UP, 72: LEFT, 74: DOWN, 76: RIGHT
   };
 
   document.onkeydown = function (event) {
