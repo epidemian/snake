@@ -100,10 +100,6 @@ footer {
   display: none;
 }
 
-.expandable {
-  position: relative;
-}
-
 .expand-btn,
 .collapse-btn {
   background: none;
