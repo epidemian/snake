@@ -302,14 +302,16 @@ function drawMaxScore() {
     return;
   }
 
+  var maxScorePoints = maxScore == 1 ? '1 point' : maxScore + ' points'
   var maxScoreGrid = localStorage.maxScoreGrid;
-  $('#max-score').innerText = maxScore;
-  $('#max-score-grid').innerText = maxScoreGrid;
+
+  $('#max-score-points').textContent = maxScorePoints;
+  $('#max-score-grid').textContent = maxScoreGrid;
   $('#max-score-container').classList.remove('hidden');
 
   $('#share').onclick = function (e) {
     e.preventDefault();
-    shareScore(maxScore, maxScoreGrid);
+    shareScore(maxScorePoints, maxScoreGrid);
   };
 }
 
@@ -320,9 +322,9 @@ function showMaxScore() {
   $('#max-score-container .expand-btn').click();
 }
 
-function shareScore(score, grid) {
-  var message = '|' + grid + '| Got ' + score +
-        ' points playing this stupid snake game on the browser URL!';
+function shareScore(scorePoints, grid) {
+  var message = '|' + grid + '| Got ' + scorePoints +
+    ' playing this stupid snake game on the browser URL!';
   var url = $('link[rel=canonical]').href;
   if (navigator.share) {
     navigator.share({text: message, url: url});
