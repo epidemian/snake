@@ -305,7 +305,7 @@ function drawMaxScore() {
   var maxScoreGrid = localStorage.maxScoreGrid;
   $('#max-score').innerText = maxScore;
   $('#max-score-grid').innerText = maxScoreGrid;
-  $('#max-score-container').classList.remove('invisible');
+  $('#max-score-container').classList.remove('hidden');
 
   if (navigator.share) {
     $('#share').classList.remove('invisible');
