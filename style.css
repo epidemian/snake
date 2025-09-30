@@ -155,6 +155,19 @@ footer {
   opacity: 0;
 }
 
+#share-note {
+  padding-left: 0.5rem;
+}
+
+#share-note.invisible {
+  /* Only animate fading out. */
+  transition: opacity 0.4s ease-in-out, display 0s ease-out 0.4s;
+  transition-behavior: allow-discrete;
+  opacity: 0;
+  /* Hide with display:none to avoid messing up the position of the collapse button. */
+  display: none;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     background: #222;

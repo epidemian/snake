@@ -307,13 +307,10 @@ function drawMaxScore() {
   $('#max-score-grid').innerText = maxScoreGrid;
   $('#max-score-container').classList.remove('hidden');
 
-  if (navigator.share) {
-    $('#share').classList.remove('invisible');
-    $('#share').onclick = function (e) {
-      e.preventDefault();
-      shareScore(maxScore, maxScoreGrid);
-    };
-  }
+  $('#share').onclick = function (e) {
+    e.preventDefault();
+    shareScore(maxScore, maxScoreGrid);
+  };
 }
 
 // Expands the high score details if collapsed. Only done when beating the
@@ -324,11 +321,23 @@ function showMaxScore() {
 }
 
 function shareScore(score, grid) {
-  navigator.share({
-    url: $('link[rel=canonical]').href,
-    text: '|' + grid + '| Got ' + score +
-      ' points playing this stupid snake game on the browser URL!'
-  });
+  var message = '|' + grid + '| Got ' + score +
+        ' points playing this stupid snake game on the browser URL!';
+  var url = $('link[rel=canonical]').href;
+  if (navigator.share) {
+    navigator.share({text: message, url: url});
+  } else {
+    navigator.clipboard.writeText(message + '\n' + url)
+      .then(function () { showShareNote('copied to clipboard') })
+      .catch(function () { showShareNote('clipboard write failed') })
+  }
+}
+
+function showShareNote(message) {
+  var note = $("#share-note");
+  note.textContent = message;
+  note.classList.remove("invisible");
+  setTimeout(function () { note.classList.add("invisible") }, 1000);
 }
 
 // Super hacky function to pick a suitable character to replace the empty
@@ -374,7 +383,7 @@ function pickWhitespaceReplacementChar() {
     for (var j = 0; j < totalPixels; j++) {
       var alpha = pixelData[j * 4 + 3];
       if (alpha != 0) {
-          coloredPixels++;
+        coloredPixels++;
       }
     }
     var notTooDark = coloredPixels / totalPixels < 0.15;
